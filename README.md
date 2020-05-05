@@ -19,3 +19,10 @@ Holding the 'X' key while in FPS mode will use the zoom field of view.
 
 ### More Options
 Additional features, but not limited to, are the following: Hide current focus' head, offset, field of view, stabilize camera during H scene, and FPS camera sensitivity.
+
+## Requirements
+* BepInEx
+
+## Installation
+* Extract the `BepInEx` folder in the game directory.
+* Play.
