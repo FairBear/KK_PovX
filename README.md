@@ -9,10 +9,10 @@ All features can be tinkered via `Plugin Settings`.
 Enter first person mode via `, (comma)` key without making your character go invisible. This will also allow you to caress girls without making yourself go invisible.
 
 ### Lock Cursor during H-Scene
-Pressing `Left CTRL` will lock your cursor, allowing you to move your camera without dragging via `Left Mouse Button`. Pressing any button will release the cursor.
+Pressing the `Left CTRL` key during H scene and FPS mode will lock your cursor, allowing you to move your camera without dragging via `Left Mouse Button`. Pressing any button will release the cursor.
 
 ### Cycle Characters
-Change your camera's focus by pressing `. (dot)` key.
+Change your camera's focus to one of the participants by pressing `. (dot)` key. Invisible participants are ignored.
 
 ### Zoom Key
 Holding the 'X' key while in FPS mode will use the zoom field of view.
