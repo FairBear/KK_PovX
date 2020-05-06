@@ -1,6 +1,11 @@
 # KK_PovX
 PoV mod from AI-Syoujyo ported to Koikatsu.
-![](https://raw.githubusercontent.com/FairBear/KK_PovX/master/Preview0.png)
+
+<details>
+  <summary>Preview</summary>
+  ![](https://raw.githubusercontent.com/FairBear/KK_PovX/master/Preview0.png)
+  
+</details>
 
 ## Features
 
