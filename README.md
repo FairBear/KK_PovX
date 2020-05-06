@@ -10,6 +10,7 @@ PoV mod from AI-Syoujyo ported to Koikatsu.
 
 
 ## Requirements
+* Koikatsu (Koikatsu Party unconfirmed if compatible.)
 * ![BepInEx](https://github.com/BepInEx/BepInEx/releases)
 
 ## Installation
