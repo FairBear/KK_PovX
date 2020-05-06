@@ -12,7 +12,7 @@ Enter first person mode via `, (comma)` key without making your character go inv
 Pressing the `Left CTRL` key during H scene and FPS mode will lock your cursor, allowing you to move your camera without dragging via `Left Mouse Button`. Pressing any button will release the cursor.
 
 ### Cycle Characters
-Change your camera's focus to one of the participants by pressing `. (dot)` key. Invisible participants are ignored.
+Change your camera's focus to one of the participants by pressing `. (period)` key. Invisible participants are ignored.
 
 ### Zoom Key
 Holding the 'X' key while in FPS mode will use the zoom field of view.
