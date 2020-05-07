@@ -14,7 +14,13 @@ PoV mod from AI-Syoujyo ported to Koikatsu.
 * ![BepInEx](https://github.com/BepInEx/BepInEx/releases)
 
 ## Installation
-* Extract the `BepInEx` folder in the game directory.
+<details>
+  <summary>Extract the `BepInEx` folder in the game directory.</summary>
+  
+  ![](https://raw.githubusercontent.com/FairBear/KK_PovX/master/Preview1.png)
+  
+</details>
+
 * Play.
 
 ## Features
