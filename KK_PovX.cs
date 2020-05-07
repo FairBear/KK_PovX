@@ -12,7 +12,7 @@ namespace KK_PovX
 	{
 		public const string GUID = "com.2155x.fairbair.kk_povx";
 		public const string PluginName = "KK_PovX";
-		public const string Version = "1.0.0";
+		public const string Version = "1.0.1";
 
 
 		const string SECTION_GENERAL = "General";
@@ -96,7 +96,7 @@ namespace KK_PovX
 			HideHead = Config.Bind(SECTION_GENERAL, "Hide Head", true, DESCRIPTION_HIDE_HEAD);
 
 			Sensitivity = Config.Bind(SECTION_CAMERA, "Camera Sensitivity", 2f);
-			Fov = Config.Bind(SECTION_CAMERA, "Field of View", 50f);
+			Fov = Config.Bind(SECTION_CAMERA, "Field of View", 70f);
 			ZoomFov = Config.Bind(SECTION_CAMERA, "Zoom Field of View", 5f);
 			OffsetX = Config.Bind(SECTION_CAMERA, "Offset X", 0f, DESCRIPTION_OFFSET_X);
 			OffsetY = Config.Bind(SECTION_CAMERA, "Offset Y", 0f, DESCRIPTION_OFFSET_Y);
