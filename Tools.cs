@@ -1,13 +1,31 @@
 ﻿using Manager;
+using UnityEngine;
 
 namespace KK_PovX
 {
 	public static class Tools
 	{
+		/// <summary>
+		/// If the user is in free-roam camera and moving.
+		/// </summary>
+		/// <returns></returns>
+		public static bool InCameraFreeRoamMovement()
+		{
+			return
+				Controller.FreeRoamToggled &&
+				(
+					Input.GetKey(KK_PovX.FreeRoamAscendKey.Value.MainKey) ||
+					Input.GetKey(KK_PovX.FreeRoamDescendKey.Value.MainKey) ||
+					Input.GetKey(KK_PovX.FreeRoamUpKey.Value.MainKey) ||
+					Input.GetKey(KK_PovX.FreeRoamDownKey.Value.MainKey) ||
+					Input.GetKey(KK_PovX.FreeRoamLeftKey.Value.MainKey) ||
+					Input.GetKey(KK_PovX.FreeRoamRightKey.Value.MainKey)
+				);
+		}
+
 		public static bool HasPlayerMovement()
 		{
 			return
-				!Controller.inHScene &&
 				Game.IsInstance() &&
 				Game.Instance.actScene != null &&
 				Game.Instance.actScene.Player != null &&
@@ -35,7 +53,7 @@ namespace KK_PovX
 			return value % mod;
 		}
 
-		// Restrict angle where origin is at 0 angle.
+		// Restrict angle where origin is at angle 0.
 		public static float AngleClamp(float value, float min, float max)
 		{
 			if (value > min && value < 360f - max)

@@ -57,10 +57,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controller.ChaControl.cs" />
+    <Compile Include="Controller.Cursor.cs" />
+    <Compile Include="Controller.PoV.ChaControl.cs" />
     <Compile Include="Controller.cs" />
-    <Compile Include="Controller.FreeRoamPoV.cs" />
-    <Compile Include="Controller.ScenePoV.cs" />
+    <Compile Include="Controller.FreeRoam.cs" />
+    <Compile Include="Controller.PoV.FreeRoam.cs" />
+    <Compile Include="Controller.PoV.cs" />
+    <Compile Include="Controller.PoV.Scene.cs" />
     <Compile Include="Hooks.cs" />
     <Compile Include="KK_PovX.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

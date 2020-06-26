@@ -1,197 +1,136 @@
-﻿using Manager;
+﻿using System;
 using UnityEngine;
 
 namespace KK_PovX
 {
 	public static partial class Controller
 	{
-		public static bool inHScene = false;
-
-		public static Quaternion bodyQuaternion = Quaternion.identity;
-		public static float bodyAngle = 0f; // Actual body, not the camera.
-
-		// Angle offsets are used for situations where the character can't move.
-		// The offsets are added to the neck's current rotation.
-		// This means that the values can be negative.
-		public static float cameraAngleOffsetX = 0f;
-		public static float cameraAngleOffsetY = 0f;
-		public static float cameraAngleY = 0f;
-		public static float cameraFoV = 0f;
-		public static Vector3 cameraPosition = Vector3.zero;
-		public static Quaternion cameraRotation = Quaternion.identity;
-		public static bool cameraDidSet = false;
-		public static float cameraSmoothness = 0f;
-
-		public static int focus = 0;
-		public static int focusLockOn = -1;
-		public static ChaControl chaCtrl = null;
-		public static ChaControl chaCtrlLockOn = null;
-
-		public static Vector3 prevPosition = Vector3.zero;
+		public static bool backup = false;
 		public static float backupFoV = 0f;
 		public static Vector3 backupPosition = Vector3.zero;
 		public static Quaternion backupRotation = Quaternion.identity;
+		public static float currFoV = 0f;
+		public static Vector3 currPosition = Vector3.zero;
+		public static Quaternion currRotation = Quaternion.identity;
 
-		public static bool inScene = false;
-		public static bool didHideHead = false;
-
-		public static bool Toggled
-		{
-			get => chaCtrl != null;
-
-			set
-			{
-				if (Toggled == value)
-					return;
-
-				if (value)
-				{
-					focus = 0;
-					ChaControl[] chaCtrls = GetChaControls();
-
-					if (chaCtrls.Length == 0)
-						return;
-
-					SetChaControl(GetChaControl());
-
-					if (Tools.HasPlayerMovement())
-					{
-						bodyQuaternion = Game.Instance.actScene.Player.rotation;
-						bodyAngle = bodyQuaternion.eulerAngles.y;
-					}
-				}
-				else
-				{
-					SetChaControl(null);
-					focusLockOn = -1;
-					chaCtrlLockOn = null;
-				}
-			}
-		}
+		public static bool cameraDidSet = false;
 
 		public static void Update()
 		{
+			Update_PoV();
+			Update_FreeRoam();
+			Update_Cursor();
+
 			if (cameraDidSet)
 				cameraDidSet = false;
-
-			if (KK_PovX.PovKey.Value.IsDown())
-				Toggled = !Toggled;
-
-			if (!Toggled)
-				return;
-
-			if (!ChaControlPredicate(chaCtrl))
-			{
-				SetChaControl(GetChaControl());
-
-				if (chaCtrl == null)
-				{
-					Toggled = false;
-					return;
-				}
-			}
-
-			if (KK_PovX.CharaCycleKey.Value.IsDown())
-			{
-				int prev = focus;
-				focus++;
-				SetChaControl(GetChaControl());
-
-				// Swap lock-on.
-				if (focusLockOn == focus)
-				{
-					focusLockOn = prev;
-					chaCtrlLockOn = GetChaControlLockOn();
-					cameraAngleOffsetX = cameraAngleOffsetY = 0f;
-				}
-				return;
-			}
-
-			if (KK_PovX.LockOnKey.Value.IsDown())
-			{
-				focusLockOn = (focusLockOn + 2) % (GetChaControls().Length + 1) - 1;
-				chaCtrlLockOn = GetChaControlLockOn();
-				cameraAngleOffsetX = cameraAngleOffsetY = 0f;
-				return;
-			}
-
-			if (KK_PovX.ToggleCursorKey.Value.IsDown())
-			{
-				Cursor.visible = !Cursor.visible;
-				Cursor.lockState = Cursor.visible ? CursorLockMode.None : CursorLockMode.Locked;
-				return;
-			}
-
-			if (Input.anyKeyDown && !Cursor.visible && !KK_PovX.ZoomKey.Value.IsPressed())
-			{
-				Cursor.visible = true;
-				Cursor.lockState = CursorLockMode.None;
-				return;
-			}
-
-			MoveCamera();
 		}
 
-		public static void MoveCamera()
+		public static bool ThresholdFoV(float a, float b)
 		{
-			float sensitivity = KK_PovX.Sensitivity.Value;
-
-			if (KK_PovX.ZoomKey.Value.IsPressed())
-				sensitivity *= KK_PovX.ZoomFoV.Value / KK_PovX.FoV.Value;
-
-			float x = Input.GetAxis("Mouse Y") * sensitivity;
-			float y = Input.GetAxis("Mouse X") * sensitivity;
-
-			if (Cursor.lockState != CursorLockMode.None || KK_PovX.CameraDragKey.Value.IsPressed())
-			{
-				float max = KK_PovX.CameraMaxX.Value;
-				float min = KK_PovX.CameraMinX.Value;
-				float span = KK_PovX.CameraSpanY.Value;
-
-				cameraAngleOffsetX = Mathf.Clamp(cameraAngleOffsetX - x, -max, min);
-				cameraAngleOffsetY = Mathf.Clamp(cameraAngleOffsetY + y, -span, span);
-				cameraAngleY = Tools.Mod2(cameraAngleY + y, 360f);
-			}
+			return Math.Abs(a - b) < 1f;
 		}
 
-		public static Vector3 GetDesiredPosition(ChaControl chaCtrl)
+		public static bool ThresholdPosition(Vector3 a, Vector3 b)
 		{
-			Transform head = chaCtrl.objHeadBone.transform;
-			EyeObject[] eyes = chaCtrl.eyeLookCtrl.eyeLookScript.eyeObjs;
-			Vector3 pos = Vector3.Lerp(
-				eyes[0].eyeTransform.position,
-				eyes[1].eyeTransform.position,
-				0.5f
-			);
+			return (a - b).magnitude < 0.1f;
+		}
 
-			return pos +
-				KK_PovX.OffsetX.Value * head.right +
-				KK_PovX.OffsetY.Value * head.up +
-				KK_PovX.OffsetZ.Value * head.forward;
+		public static bool ThresholdRotation(Quaternion a, Quaternion b)
+		{
+			return Quaternion.Angle(a, b) < 1f;
 		}
 
 		public static void SetFoV()
 		{
-			if (cameraFoV != Camera.main.fieldOfView)
-				backupFoV = Camera.main.fieldOfView;
+			Camera camera = Camera.main;
 
-			Camera.main.fieldOfView = cameraFoV =
+			if (camera == null)
+				return;
+
+			if (!ThresholdFoV(currFoV, camera.fieldOfView))
+				backupFoV = camera.fieldOfView;
+
+			camera.fieldOfView = currFoV =
 				KK_PovX.ZoomKey.Value.IsPressed() ?
 					KK_PovX.ZoomFoV.Value :
 					KK_PovX.FoV.Value;
 		}
 
-		public static void SetPosition()
+		public static void SetPosition(Vector3 position)
 		{
-			if (cameraPosition != Camera.main.transform.position)
-				backupPosition = Camera.main.transform.position;
+			Transform transform = Camera.main?.transform;
 
-			Vector3 next = GetDesiredPosition(chaCtrl);
+			if (transform == null)
+				return;
 
-			if (cameraSmoothness > 0f)
-				next = prevPosition = Vector3.Lerp(next, prevPosition, cameraSmoothness);
+			if (!ThresholdPosition(currPosition, transform.position))
+				backupPosition = transform.position;
 
-			Camera.main.transform.position = cameraPosition = next;
+			transform.position = currPosition = position;
+		}
+
+		public static void SetRotation(Quaternion rotation)
+		{
+			Transform transform = Camera.main?.transform;
+
+			if (transform == null)
+				return;
+
+			if (!ThresholdRotation(currRotation, transform.rotation))
+				backupRotation = transform.rotation;
+
+			transform.rotation = currRotation = rotation;
+		}
+
+		public static void SetRotation(Action act)
+		{
+			Transform transform = Camera.main?.transform;
+
+			if (transform == null)
+				return;
+
+			if (!ThresholdRotation(currRotation, transform.rotation))
+				backupRotation = transform.rotation;
+
+			act();
+			currRotation = transform.rotation;
+		}
+
+		public static void SetBackups()
+		{
+			Camera camera = Camera.main;
+
+			if (camera == null)
+				return;
+
+			if (backup)
+				RestoreBackups();
+
+			backup = true;
+			backupFoV = currFoV = camera.fieldOfView;
+			backupPosition = currPosition = camera.transform.position;
+			backupRotation = currRotation = camera.transform.rotation;
+		}
+
+		public static void RestoreBackups()
+		{
+			ToggleCursorLock(false);
+
+			Camera camera = Camera.main;
+
+			if (camera == null)
+				return;
+
+			backup = false;
+
+			if (ThresholdFoV(currFoV, camera.fieldOfView))
+				camera.fieldOfView = backupFoV;
+
+			if (ThresholdPosition(currPosition, camera.transform.position))
+				camera.transform.position = backupPosition;
+
+			if (ThresholdRotation(currRotation, camera.transform.rotation))
+				camera.transform.rotation = backupRotation;
 		}
 	}
 }
