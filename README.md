@@ -9,6 +9,9 @@ PoV mod from AI-Syoujyo ported to Koikatsu.
 </details>
 
 
+## No Longer in Development
+Development regarding this mod is permanently put to a halt. I sincerly apologize for any bugs currently present as I do not have the time and resources to fix and maintain the mod. You may take and/or modify the source code at your own discretion.
+
 ## Requirements
 * Koikatu or Koikatsu Party
 * ![BepInEx](https://github.com/BepInEx/BepInEx/releases)
