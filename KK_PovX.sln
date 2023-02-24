@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29403.142
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33417.168
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KK_PovX", "KK_PovX.csproj", "{4C70B131-CE05-49CC-A17E-E8B95F39C9FE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Files", "Solution Files", "{8DABA8B0-D87A-4330-8F7B-C1C5F75A0506}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
