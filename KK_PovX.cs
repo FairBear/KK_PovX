@@ -13,7 +13,7 @@ namespace KK_PovX
 	{
 		public const string GUID = "com.2155x.fairbair.kk_povx";
 		public const string PluginName = "KK_PovX";
-		public const string Version = "1.2.0";
+		public const string Version = "1.2.1";
 
 
 		const string SECTION_GENERAL = "General";
