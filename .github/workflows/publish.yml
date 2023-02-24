@@ -51,6 +51,6 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         files: KK_PovX.zip
-        tag_name: ${{ VERSION }}
+        tag_name: ${{ env.VERSION }}
         draft: false
         prerelease: false
