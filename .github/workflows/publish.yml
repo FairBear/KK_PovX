@@ -1,0 +1,56 @@
+name: "Publish"
+
+on:
+  push:
+    branches: [ "main" ]
+
+env:
+  VERSION:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Check
+      uses: actions/checkout@main
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@main
+
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@main
+
+    - name: Restore dependencies
+      shell: pwsh
+      run: nuget restore
+
+    - name: Build
+      shell: pwsh
+      run: msbuild -m /nologo /nr:false /p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:DeleteExistingFiles=True /p:platform="Any CPU" /p:configuration="Release"
+
+    - name: Create TEMP Directory
+      shell: pwsh
+      run: New-Item -Force -ItemType Directory $env:TEMP/BepInEx/plugins
+
+    - name: Copy content to TEMP Directory
+      shell: pwsh
+      run: Copy-Item -Recurse -Force bin/release/KK_PovX.dll $env:TEMP/BepInEx/plugins/KK_PovX.dll
+
+    - name: Create Archive
+      shell: pwsh
+      run: Compress-Archive -LiteralPath $env:TEMP/BepInEx -DestinationPath KK_PovX.zip -Force
+
+    - name: Version
+      shell: pwsh
+      run: |
+        $v = [System.Reflection.Assembly]::LoadFrom("bin/Release/KK_PovX.dll").GetName().Version.ToString()
+        echo "VERSION=$v" >> $env:GITHUB_ENV
+
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: KK_PovX.zip
+        tag_name: ${{ VERSION }}
+        draft: false
+        prerelease: false
