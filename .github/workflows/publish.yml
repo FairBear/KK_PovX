@@ -2,10 +2,10 @@ name: "Publish"
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
 
 env:
-  VERSION:
+  VERSION: "1.0.0"
 
 jobs:
   build:
